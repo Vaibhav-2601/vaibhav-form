@@ -171,7 +171,7 @@
 <div class="bg-gradient"></div>
 
 <div class="container" id="screen">
-  <div class="counter" id="counter">Failed proposals: 0</div>
+  <div class="counter" id="counter">Failed Rejections: 0</div>
 
   <div class="question" id="question">
     <h1>Hey Alisha, will you be my Valentine? ❤️</h1>
@@ -221,7 +221,7 @@
 
   noBtn.addEventListener("mouseover", () => {
     failedCount++;
-    counter.textContent = `Rejections: ${failedCount}`;
+    counter.textContent = `Failed Rejections: ${failedCount}`;
 
     failSound.currentTime = 0;
     failSound.play();
