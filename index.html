@@ -166,14 +166,18 @@
   yesBtn.addEventListener("click", () => {
 
     emailjs.send("service_7pbnnym", "template_fw1q8ze", {
-      time: new Date().toLocaleString(),
-      device: /Mobi/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
-      browser: navigator.userAgent,
-      os: navigator.platform,
-      screen: `${window.screen.width} x ${window.screen.height}`,
-      language: navigator.language,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    });
+  to_email: "YOUR_GMAIL@gmail.com",
+  time: new Date().toLocaleString(),
+  device: /Mobi/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
+  browser: navigator.userAgent,
+  os: navigator.platform,
+  screen: `${window.screen.width} x ${window.screen.height}`,
+  language: navigator.language,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+})
+.then(...)
+.catch(...);
+
 
     document.getElementById("song").play();
     document.getElementById("result").style.display = "block";
