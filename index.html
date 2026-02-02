@@ -221,7 +221,7 @@
 
   noBtn.addEventListener("mouseover", () => {
     failedCount++;
-    counter.textContent = `Failed proposals: ${failedCount}`;
+    counter.textContent = `Rejections: ${failedCount}`;
 
     failSound.currentTime = 0;
     failSound.play();
@@ -238,7 +238,7 @@
     song.volume = 0.5;
     song.play();
 
-    finalText.textContent = `Failed proposals: ${failedCount}, Successful: 1`;
+    finalText.textContent = `Rejected: ${failedCount} times, Accepted: Once!`;
 
     question.style.display = "none";
     counter.style.display = "none";
