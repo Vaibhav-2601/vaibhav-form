@@ -151,7 +151,6 @@
   <div class="result" id="result">
     <div id="finalText"></div>
     <img id="slideImage" src="alisha.png">
-    <div id="typeText"></div>
   </div>
 </div>
 
@@ -162,24 +161,48 @@
   emailjs.init("_ujv7jWs2nIC3VeDn");
 
   const yesBtn = document.getElementById("yes");
+  const noBtn = document.getElementById("no");
+  const counter = document.getElementById("counter");
+  const screen = document.getElementById("screen");
 
+  let failedCount = 0;
+
+  /* NO button logic */
+  noBtn.addEventListener("mouseover", () => {
+    failedCount++;
+    counter.textContent = `Failed proposals: ${failedCount}`;
+
+    screen.classList.add("shake");
+    setTimeout(() => screen.classList.remove("shake"), 300);
+
+    noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
+    noBtn.style.top = Math.random() * (window.innerHeight - 120) + "px";
+  });
+
+  /* YES button logic */
   yesBtn.addEventListener("click", () => {
+    console.log("YES CLICKED");
 
     emailjs.send("service_7pbnnym", "template_fw1q8ze", {
-  to_email: "YOUR_GMAIL@gmail.com",
-  time: new Date().toLocaleString(),
-  device: /Mobi/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
-  browser: navigator.userAgent,
-  os: navigator.platform,
-  screen: `${window.screen.width} x ${window.screen.height}`,
-  language: navigator.language,
-  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-})
-.then(...)
-.catch(...);
-
+      to_email: "YOUR_GMAIL@gmail.com",
+      time: new Date().toLocaleString(),
+      device: /Mobi/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
+      browser: navigator.userAgent,
+      os: navigator.platform,
+      screen: `${window.screen.width} x ${window.screen.height}`,
+      language: navigator.language,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    })
+    .then(response => {
+      console.log("EMAIL SENT ✅", response.status);
+    })
+    .catch(error => {
+      console.error("EMAIL FAILED ❌", error);
+    });
 
     document.getElementById("song").play();
+    document.getElementById("question").style.display = "none";
+    document.getElementById("counter").style.display = "none";
     document.getElementById("result").style.display = "block";
     document.getElementById("slideImage").classList.add("slide-in");
   });
