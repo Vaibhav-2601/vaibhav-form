@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine?</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* 📸 Background photo */
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("bg.jpeg") center/cover no-repeat;
+      filter: brightness(0.6) blur(1px);
+      z-index: -3;
+    }
+
+    /* 🌈 Animated gradient overlay */
+    .bg-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(270deg, rgba(255,117,140,0.6), rgba(255,126,179,0.6), rgba(250,208,196,0.6));
+      background-size: 600% 600%;
+      animation: gradientMove 12s ease infinite;
+      z-index: -2;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      text-align: center;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1;
+    }
+
+    /* ❤️ Floating hearts */
+    .heart {
+      position: absolute;
+      color: rgba(255,255,255,0.85);
+      font-size: 20px;
+      animation: floatUp 8s linear infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
+
+    /* 🔥 Screen shake */
+    .shake {
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0); }
+      25% { transform: translate(-8px, 5px); }
+      50% { transform: translate(8px, -5px); }
+      75% { transform: translate(-5px, 8px); }
+      100% { transform: translate(0); }
+    }
+
+    .counter {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.2rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .question {
+      margin-top: 80px;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      color: #fff;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+
+    .subtext {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 1.2rem;
+      padding: 12px 28px;
+      margin: 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    #yes {
+      background: linear-gradient(to right, #56ab2f, #a8e063);
+      color: white;
+    }
+
+    #no {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      position: absolute;
+    }
+
+    .result {
+      display: none;
+      margin-top: 120px;
+      color: #fff;
+      font-size: 1.6rem;
+    }
+
+    /* ➡️ Slide-in PNG */
+    #slideImage {
+      width: 320px;
+      opacity: 0;
+      transform: translateX(100vw);
+    }
+
+    .slide-in {
+      animation: slideIn 1s ease-out forwards;
+    }
+
+    @keyframes slideIn {
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .typewriter {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      min-height: 1.5em;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Background layers -->
+<div class="bg-image"></div>
+<div class="bg-gradient"></div>
+
+<div class="container" id="screen">
+  <div class="counter" id="counter">Failed proposals: 0</div>
+
+  <div class="question" id="question">
+    <h1>Hey Alisha, will you be my Valentine? ❤️</h1>
+    <div class="subtext">Try clicking No!</div>
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+
+  <div class="result" id="result">
+    <div id="finalText"></div>
+    <img id="slideImage" src="alisha.png">
+    <div class="typewriter" id="typeText"></div>
+  </div>
+</div>
+
+<!-- 🔊 Sounds -->
+<audio id="failSound" src="https://www.myinstants.com/media/sounds/cartoon-fail-trumpet.mp3"></audio>
+<audio id="winSound" src="https://www.myinstants.com/media/sounds/tada-fanfare-a.mp3"></audio>
+<audio id="song" src="night-changes.mp3" loop></audio>
+
+<script>
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const counter = document.getElementById("counter");
+  const question = document.getElementById("question");
+  const result = document.getElementById("result");
+  const finalText = document.getElementById("finalText");
+  const screen = document.getElementById("screen");
+  const typeText = document.getElementById("typeText");
+  const slideImage = document.getElementById("slideImage");
+
+  const failSound = document.getElementById("failSound");
+  const winSound = document.getElementById("winSound");
+  const song = document.getElementById("song");
+
+  let failedCount = 0;
+
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (16 + Math.random() * 20) + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 8000);
+  }, 400);
+
+  noBtn.addEventListener("mouseover", () => {
+    failedCount++;
+    counter.textContent = `Failed proposals: ${failedCount}`;
+
+    failSound.currentTime = 0;
+    failSound.play();
+
+    screen.classList.add("shake");
+    setTimeout(() => screen.classList.remove("shake"), 300);
+
+    noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
+    noBtn.style.top = Math.random() * (window.innerHeight - 120) + "px";
+  });
+
+  yesBtn.addEventListener("click", () => {
+    winSound.play();
+    song.volume = 0.5;
+    song.play();
+
+    finalText.textContent = `Failed proposals: ${failedCount}, Successful: 1`;
+
+    question.style.display = "none";
+    counter.style.display = "none";
+    result.style.display = "block";
+
+    slideImage.classList.add("slide-in");
+
+    setTimeout(() => {
+      typeWriter(
+        "Coming to pick you at 8 pm sharp on 7th Feb.... Please clear your schedule Miss Chandoliya!",
+        6500
+      );
+    }, 1000);
+  });
+
+  function typeWriter(text, duration) {
+    typeText.textContent = "";
+    let i = 0;
+    const interval = duration / text.length;
+
+    const typer = setInterval(() => {
+      typeText.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) clearInterval(typer);
+    }, interval);
+  }
+</script>
+</body>
+</html>
